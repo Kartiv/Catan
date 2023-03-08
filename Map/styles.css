@@ -5,3 +5,18 @@ body{
 canvas{
     border:solid 3px black;
 }
+
+#dice{
+    position:absolute;
+    border:solid 4px black;
+    height:100px;
+    width:100px;
+    background-color: white;
+    top: 20px;
+    left: 1300px;
+    font-size:16px;
+    border-radius: 12px;
+}
+#dice:active{
+    background-color: antiquewhite;
+}
