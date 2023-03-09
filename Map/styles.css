@@ -1,8 +1,9 @@
 body{
-    background:paleturquoise;
+    background:plum;
 }
 
 canvas{
+    z-index: 0;
     border:solid 3px black;
 }
 
@@ -19,4 +20,8 @@ canvas{
 }
 #dice:active{
     background-color: antiquewhite;
+}
+
+.vertex:active{
+    background-color: gray;
 }

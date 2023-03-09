@@ -54,6 +54,38 @@ class jsn{
     }
 
     /**
+     * 
+     * @param {list} arr 
+     * @param {any} element 
+     * @returns true if element is in the array and false else
+     */
+    static inArr(arr, element){
+        for(let i=0; i<arr.length; i++){
+            if(element==arr[i]){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 
+     * @param {list} arr 
+     * @param {list} element 
+     * @returns true if an instance of the element is in arr
+     */
+    static arrInArr(arr, element){
+        for(let i=0; i<arr.length; i++){
+            if(jsn.areEqual(element,arr[i])){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if two lists are identical
      * @param {Array} a 
      * @param {Array} b 

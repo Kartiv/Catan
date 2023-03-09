@@ -43,3 +43,9 @@ class Card{
         (i*card_width-row*row_cap*card_width).toString()+"px;";
     }
 }
+
+class House{
+    constructor(){
+        
+    }
+}

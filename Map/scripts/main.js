@@ -10,7 +10,8 @@ const map_left = 500; //not really the distance from the left but imagine that i
 const map_top = 100; //same
 const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
-
+var vertex_list = [];
+var house_buttons = [];
 var houses = [];
 
 //card variables
@@ -40,12 +41,28 @@ function map_generation(){
         for(let j=0; j<i; j++){
             hex_grid.push(Polygon.createHex(map_left-hex_width*3**0.5/4*i+j*hex_width*3**0.5/2, //every row gets shifted left
                                         map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
+
+            for(let k=0; k<hex_grid[hex_grid.length-1].vertices.length; k++){
+                let vert = hex_grid[hex_grid.length-1].vertices[k];
+                let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
+                if(!(jsn.arrInArr(vertex_list, id))){
+                    vertex_list.push(id);
+                }
+            }
         }
     }
     for(let i=4; i>2; i--){ //creating bottom half (minus middle row)
         for(let j=0; j<i; j++){
             hex_grid.push(Polygon.createHex(map_left-hex_width*3**0.5/4*i+j*hex_width*3**0.5/2, //same as before
                                         map_top+(7-i)*hex_width*3/4, hex_width));
+
+            for(let k=0; k<hex_grid[hex_grid.length-1].vertices.length; k++){
+                let vert = hex_grid[hex_grid.length-1].vertices[k];
+                let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
+                if(!(jsn.arrInArr(vertex_list, id))){
+                    vertex_list.push(id);
+                }
+            }          
         }
     }
 
@@ -73,11 +90,29 @@ function map_generation(){
     return map;
 }
 
+function create_house_buttons(){
+    for(let i=0; i<vertex_list.length; i++){
+        let b = document.createElement('button');
+        b.style = "position:absolute; left:" + vertex_list[i][0].toString() + "px; top:" + vertex_list[i][1].toString() +
+        "px; width:20px; height:20px; border-radius:12px; z-index:1; display:none;";
+        b.className = 'vertex';
+        b.onclick = house_click;
+        document.body.appendChild(b);
+        house_buttons.push(b);
+    }
+}
+
 //create and draw map
 let map = map_generation();
+create_house_buttons();
 
 for(let p of map){
     p.draw(ctx);
+}
+
+//Houses and shit
+function house_click(){
+    console.log("oongaboonga");
 }
 
 //Gameloop
@@ -99,6 +134,5 @@ function dice_click(){
 
         dice_on = false;
         end_on = true;
-        //draw_hand();
     }
 }
