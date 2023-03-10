@@ -10,8 +10,9 @@ const map_left = 500; //not really the distance from the left but imagine that i
 const map_top = 100; //same
 const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
-var vertex_list = [];
-var house_buttons = [];
+var vertex_list = []; //list of the vertices of the hexagons WITHOUT REPETITION
+var hex_map = []; //list of the hexagon elements
+var house_buttons = []; //list of the buttons on the vertices that place houses
 var houses = [];
 
 //card variables
@@ -19,11 +20,12 @@ const hand_top = 700; //distance of hand from top
 const hand_left = 750; //same with left
 const card_width = 70;
 const card_height = Math.ceil(card_width*2**0.5);
-const row_cap = 20; //number of cards in a row
+const row_cap = 16; //number of cards in a row
 const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'sheep.png', 'purple'];
 
 //dice variables
 var dice_on = true; //controls if the dice are clickable
+var roll_display = document.getElementById("rollresult");
 
 //player variables
 var turn = 1; //1 if its the players turn and 0 else
@@ -103,10 +105,10 @@ function create_house_buttons(){
 }
 
 //create and draw map
-let map = map_generation();
+hex_map = map_generation();
 create_house_buttons();
 
-for(let p of map){
+for(let p of hex_map){
     p.draw(ctx);
 }
 
@@ -129,8 +131,14 @@ function dice_click(){
         let s2 = jsn.randint(1,7);
 
         let value = s1+s2;
+        roll_display.innerHTML = "Roll:" + s1.toString() + " + " + s2.toString() + " = " + (s1+s2).toString();
 
-        player_hand.push(new Card(4));
+        for(let i=0; i<hex_map.length; i++){
+            if(hex_map[i].number == value){
+                player_hand.push(new Resource(hex_map[i].resource));
+            }
+        }
+        
 
         dice_on = false;
         end_on = true;

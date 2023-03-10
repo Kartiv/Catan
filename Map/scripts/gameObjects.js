@@ -44,6 +44,28 @@ class Card{
     }
 }
 
+class Resource extends Card{
+    constructor(resource){
+        super(resource);
+        this.button.onclick = this.onclick;
+    }
+
+    onclick(){
+
+    }
+}
+
+class Devcard extends Card{
+    constructor(resource){
+        super(resource);
+        this.button.onclick = this.onclick;
+    }
+
+    onclick(){
+
+    }
+}
+
 class House{
     constructor(){
         
