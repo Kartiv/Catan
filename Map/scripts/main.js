@@ -10,6 +10,7 @@ const map_left = 500; //not really the distance from the left but imagine that i
 const map_top = 100; //same
 const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
+const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','DiceFive.png','DiceSix.png']
 var vertex_list = []; //list of the vertices of the hexagons WITHOUT REPETITION
 var hex_map = []; //list of the hexagon elements
 var house_buttons = []; //list of the buttons on the vertices that place houses
@@ -26,7 +27,8 @@ const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'shee
 //dice variables
 var dice_on = true; //controls if the dice are clickable
 var roll_display = document.getElementById("rollresult");
-
+var diceOne = document.getElementById("diceone");
+var diceTwo = document.getElementById("dicetwo");
 //player variables
 var turn = 1; //1 if its the players turn and 0 else
 var end_on = false; //controls if end turn button is clickable
@@ -131,8 +133,9 @@ function dice_click(){
         let s2 = jsn.randint(1,7);
 
         let value = s1+s2;
-        roll_display.innerHTML = "Roll:" + s1.toString() + " + " + s2.toString() + " = " + (s1+s2).toString();
-
+        roll_display.innerHTML = "Roll:" + (s1+s2).toString();
+        diceOne.innerHTML = "<img src='" + dice_faces[s1-1] + "'>"
+        diceTwo.innerHTML = "<img src='" + dice_faces[s2-1] + "'>"
         for(let i=0; i<hex_map.length; i++){
             if(hex_map[i].number == value){
                 player_hand.push(new Resource(hex_map[i].resource));

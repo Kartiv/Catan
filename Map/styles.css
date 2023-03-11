@@ -35,6 +35,24 @@ canvas{
     text-align: center;
 }
 
+#diceone{
+    position:absolute;
+    height:100px;
+    width:100px;
+    top:165px;
+    left:1200px;
+    text-align: center;
+}
+
+#dicetwo{
+    position:absolute;
+    height:100px;
+    width:100px;
+    top:165px;
+    left:1300px;
+    text-align: center;
+}
+
 .vertex:active{
     background-color: gray;
 }
