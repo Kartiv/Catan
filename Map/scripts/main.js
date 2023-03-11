@@ -10,7 +10,7 @@ const map_left = 500; //not really the distance from the left but imagine that i
 const map_top = 100; //same
 const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
-const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','DiceFive.png','DiceSix.png']
+const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','DiceFive.png','DiceSix.png'] //list of the photos for the dies
 var vertex_list = []; //list of the vertices of the hexagons WITHOUT REPETITION
 var hex_map = []; //list of the hexagon elements
 var house_buttons = []; //list of the buttons on the vertices that place houses
@@ -27,8 +27,8 @@ const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'shee
 //dice variables
 var dice_on = true; //controls if the dice are clickable
 var roll_display = document.getElementById("rollresult");
-var diceOne = document.getElementById("diceone");
-var diceTwo = document.getElementById("dicetwo");
+var diceOne = document.getElementById("diceone"); //div of first dice for display
+var diceTwo = document.getElementById("dicetwo"); //div of second dice for display
 //player variables
 var turn = 1; //1 if its the players turn and 0 else
 var end_on = false; //controls if end turn button is clickable
