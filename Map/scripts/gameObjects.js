@@ -20,6 +20,16 @@ class Tile{
     }
 }
 
+class Vertex{
+    constructor(id){
+        this.id = id;
+        this.button_id = id[0].toString() + id[1].toString();
+        this.hex_arr = [];
+        this.button;
+        this.house;
+    }
+}
+
 class Card{
     constructor(resource){
         this.resource = resource;
@@ -63,11 +73,5 @@ class Devcard extends Card{
 
     onclick(){
 
-    }
-}
-
-class House{
-    constructor(){
-        
     }
 }

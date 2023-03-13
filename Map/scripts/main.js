@@ -11,10 +11,9 @@ const map_top = 100; //same
 const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
 const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','DiceFive.png','DiceSix.png'] //list of the photos for the dies
-var vertex_list = []; //list of the vertices of the hexagons WITHOUT REPETITION
+var vertex_list = []; //list of the vertices- each vertex knows its neighboring hexes and its relevant button
+var vert_dict = {}; //dictionary of the vertices where the keys are their buttons' id's
 var hex_map = []; //list of the hexagon elements
-var house_buttons = []; //list of the buttons on the vertices that place houses
-var houses = [];
 
 //card variables
 const hand_top = 700; //distance of hand from top
@@ -32,12 +31,22 @@ var diceTwo = document.getElementById("dicetwo"); //div of second dice for displ
 //player variables
 var turn = 1; //1 if its the players turn and 0 else
 var end_on = false; //controls if end turn button is clickable
-var player_houses = [];
 var player_hand = [];
 
 //map generation
 
 function map_generation(){
+
+    function compare_id(id, hex_grid){
+        for(let i=0; i<vertex_list.length; i++){
+            if(jsn.areEqual(vertex_list[i].id,id)){
+                vertex_list[i].hex_arr.push(hex_grid[hex_grid.length-1]); //if we already encountered this vertex then
+                //we note that the current hex is adjacent to it
+                return true;
+            }
+        }
+        return false;
+    }
 
     //create the hexagons
     let hex_grid = [];
@@ -46,11 +55,12 @@ function map_generation(){
             hex_grid.push(Polygon.createHex(map_left-hex_width*3**0.5/4*i+j*hex_width*3**0.5/2, //every row gets shifted left
                                         map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
 
-            for(let k=0; k<hex_grid[hex_grid.length-1].vertices.length; k++){
+            for(let k=0; k<hex_grid[hex_grid.length-1].vertices.length; k++){ //add new vertices
                 let vert = hex_grid[hex_grid.length-1].vertices[k];
                 let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
-                if(!(jsn.arrInArr(vertex_list, id))){
-                    vertex_list.push(id);
+                if(!(compare_id(id, hex_grid))){
+                    vertex_list.push(new Vertex(id));
+                    vertex_list[vertex_list.length-1].hex_arr.push(hex_grid[hex_grid.length-1]);
                 }
             }
         }
@@ -63,11 +73,17 @@ function map_generation(){
             for(let k=0; k<hex_grid[hex_grid.length-1].vertices.length; k++){
                 let vert = hex_grid[hex_grid.length-1].vertices[k];
                 let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
-                if(!(jsn.arrInArr(vertex_list, id))){
-                    vertex_list.push(id);
+                if(!(compare_id(id, hex_grid))){
+                    vertex_list.push(new Vertex(id));
+                    vertex_list[vertex_list.length-1].hex_arr.push(hex_grid[hex_grid.length-1]);
                 }
             }          
         }
+    }
+
+    //create vert_dict
+    for(let i=0; i<vertex_list.length; i++){
+        vert_dict[vertex_list[i].button_id] = vertex_list[i];
     }
 
     //assign resources
@@ -97,12 +113,39 @@ function map_generation(){
 function create_house_buttons(){
     for(let i=0; i<vertex_list.length; i++){
         let b = document.createElement('button');
-        b.style = "position:absolute; left:" + vertex_list[i][0].toString() + "px; top:" + vertex_list[i][1].toString() +
-        "px; width:20px; height:20px; border-radius:12px; z-index:1; display:none;";
+        b.style = "position:absolute; left:" + vertex_list[i].id[0].toString() + "px; top:" +
+        vertex_list[i].id[1].toString() + "px; width:20px; height:20px; border-radius:12px; z-index:1; display:none;";
         b.className = 'vertex';
-        b.onclick = house_click;
+        b.id = vertex_list[i].id[0].toString() + vertex_list[i].id[1].toString();
+        b.onclick = function(e){
+            let flag = true; //this is a flag to know if placing the house is a legal move
+            let vert = vert_dict[this.id];
+            for(let hex of vert.hex_arr){ //checks if the move is legal by going through all neighbors
+                for(let i=0; i<hex.vertices.length; i++){
+                    let id = Math.round(hex.vertices[i].coords[0]).toString() + //looking for the pressed button in the
+                            Math.round(hex.vertices[i].coords[1]).toString(); //polygons vertex list
+                    if(id==vert.button_id){
+                        let id1 = Math.round(hex.vertices[(i-1+6)%6].coords[0]).toString() +
+                        Math.round(hex.vertices[(i-1+6)%6].coords[1]).toString(); //the vertices of a polygon are ordered
+                        let id2 = Math.round(hex.vertices[(i+1+6)%6].coords[0]).toString() + //so this does work
+                        Math.round(hex.vertices[(i+1+6)%6].coords[1]).toString();
+                        if(vert_dict[id1].house || vert_dict[id2].house){
+                            flag = false;
+                        }
+                    }
+                }
+            }
+
+            if(flag){ //make house or something brr
+                vert.house = turn;
+                ctx.fillStyle = "red";
+                ctx.fillRect(vert.id[0]-20, vert.id[1]-20, 40, 40);
+                ctx.fill();
+                this.style.display = 'none';
+            }
+        };
         document.body.appendChild(b);
-        house_buttons.push(b);
+        vertex_list[i].button = b;
     }
 }
 
@@ -114,10 +157,6 @@ for(let p of hex_map){
     p.draw(ctx);
 }
 
-//Houses and shit
-function house_click(){
-    console.log("oongaboonga");
-}
 
 //Gameloop
 
