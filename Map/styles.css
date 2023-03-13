@@ -56,3 +56,11 @@ canvas{
 .vertex:active{
     background-color: gray;
 }
+
+.actionButtons{
+    position:absolute;
+    left: 1350px;
+    height: 50px;
+    width: 50px;
+    padding: 0%;
+}
