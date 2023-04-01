@@ -14,6 +14,7 @@ const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','
 var vertex_list = []; //list of the vertices- each vertex knows its neighboring hexes and its relevant button
 var vert_dict = {}; //dictionary of the vertices where the keys are their buttons' id's
 var hex_map = []; //list of the hexagon elements
+const house_size = 30;
 
 //card variables
 const hand_top = 700; //distance of hand from top
@@ -28,10 +29,15 @@ var dice_on = true; //controls if the dice are clickable
 var roll_display = document.getElementById("rollresult");
 var diceOne = document.getElementById("diceone"); //div of first dice for display
 var diceTwo = document.getElementById("dicetwo"); //div of second dice for display
+
 //player variables
-var turn = 1; //1 if its the players turn and 0 else
+var player_colors = ["red", "blue", "grey", "green", "yellow"];
+var turn = 0;
+var main_player = 0;
 var end_on = false; //controls if end turn button is clickable
-var player_hand = [];
+var player_hands = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]; //tree-stone-wheat-bricks-sheep
+var victory_points = [0,0,0,0,0];
+var cards = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
 
 //map generation
 
@@ -118,34 +124,171 @@ function create_house_buttons(){
         b.className = 'vertex';
         b.id = vertex_list[i].id[0].toString() + vertex_list[i].id[1].toString();
         b.onclick = function(e){
-            let flag = true; //this is a flag to know if placing the house is a legal move
+
             let vert = vert_dict[this.id];
-            for(let hex of vert.hex_arr){ //checks if the move is legal by going through all neighbors
-                for(let i=0; i<hex.vertices.length; i++){
-                    let id = Math.round(hex.vertices[i].coords[0]).toString() + //looking for the pressed button in the
-                            Math.round(hex.vertices[i].coords[1]).toString(); //polygons vertex list
-                    if(id==vert.button_id){
-                        let id1 = Math.round(hex.vertices[(i-1+6)%6].coords[0]).toString() +
-                        Math.round(hex.vertices[(i-1+6)%6].coords[1]).toString(); //the vertices of a polygon are ordered
-                        let id2 = Math.round(hex.vertices[(i+1+6)%6].coords[0]).toString() + //so this does work
-                        Math.round(hex.vertices[(i+1+6)%6].coords[1]).toString();
-                        if(vert_dict[id1].house || vert_dict[id2].house){
-                            flag = false;
+
+            if(vert.house == null){ //meaning a house is trying to be placed here
+
+                let flag = true; //this is a flag to know if placing the house is a legal move
+                for(let hex of vert.hex_arr){ //checks if the move is legal by going through all neighbors
+                    for(let i=0; i<hex.vertices.length; i++){
+                        let id = Math.round(hex.vertices[i].coords[0]).toString() + //looking for the pressed button in the
+                                Math.round(hex.vertices[i].coords[1]).toString(); //polygons vertex list
+                        if(id==vert.button_id){
+                            let id1 = Math.round(hex.vertices[(i-1+6)%6].coords[0]).toString() +
+                            Math.round(hex.vertices[(i-1+6)%6].coords[1]).toString(); //the vertices of a polygon are ordered
+                            let id2 = Math.round(hex.vertices[(i+1+6)%6].coords[0]).toString() + //so this does work
+                            Math.round(hex.vertices[(i+1+6)%6].coords[1]).toString();
+                            if(vert_dict[id1].house!=null || vert_dict[id2].house!=null){
+                                flag = false;
+                            }
                         }
                     }
                 }
+    
+                if(flag){ //make house or something brr
+                    vert.house = turn;
+                    add_point(turn); //add victory point to current player
+
+                    var img = document.createElement("img");
+                    img.src="house.png";
+                    img.style = "width: " + (house_size).toString()+"px; height: "+ 
+                    (house_size).toString()+"px; position:absolute; top:" + (vert.id[1]-5).toString() + "px;" + 
+                    "left:" + (vert.id[0]-5).toString() + "px;";
+                    vert.image = img;
+                    document.body.appendChild(img);
+
+                    hide_placement_buttons();
+                }
+
             }
 
-            if(flag){ //make house or something brr
-                vert.house = turn;
-                ctx.fillStyle = "red";
-                ctx.fillRect(vert.id[0]-20, vert.id[1]-20, 40, 40);
-                ctx.fill();
-                this.style.display = 'none';
+            else{
+                if(vert.house == turn){
+                    vert.house+=10;
+                    add_point(turn);
+                    vert.image.src = "city.png";
+                    hide_placement_buttons();
+                }
             }
+            
+
         };
         document.body.appendChild(b);
         vertex_list[i].button = b;
+    }
+}
+
+//Gameloop
+
+function start_turn(p){
+    turn = p;
+    dice_on = true;
+    end_on = false;
+}
+
+function add_point(turn){
+    victory_points[turn] +=1;
+}
+
+
+//Buttons
+
+function show_placement_buttons(){
+    for(let i of vertex_list){
+        if(i.house == null){
+            i.button.style.display = "block";
+        }
+    }
+}
+
+function show_city_buttons(){
+    for(let i of vertex_list){
+        if(i.house==turn){
+            i.button.style.display = "block";
+        }
+    }
+}
+
+function hide_placement_buttons(){
+    for(let i of vertex_list){
+        i.button.style.display = "none";
+    }
+}
+
+function dice_click(){
+    if(turn==main_player){
+        let s1 = jsn.randint(1,7);
+        let s2 = jsn.randint(1,7);
+
+        let value = s1+s2;
+        roll_display.innerHTML = "Roll:" + (s1+s2).toString();
+        diceOne.innerHTML = "<img src='" + dice_faces[s1-1] + "'>"
+        diceTwo.innerHTML = "<img src='" + dice_faces[s2-1] + "'>"
+        for(let i=0; i<hex_map.length; i++){
+            if(hex_map[i].number == value){
+
+                let resource = hex_map[i].resource;
+
+                for(let j=0; j<hex_map[i].poly.vertices.length; j++){
+                    let vert = hex_map[i].poly.vertices[j];
+                    let id = Math.round(vert.coords[0]).toString() + Math.round(vert.coords[1]).toString();
+                    let player = vert_dict[id].house;
+
+                    if(player!=null){
+                        let double = 1;
+                        if(player>=10){
+                            double = 2;
+                            player-=10;
+                        }
+
+                        let value = player_hands[player][resource];
+                        if(!value){
+                            cards[resource].turnOn();
+                        }
+                        player_hands[player][resource]+=double;
+                        cards[resource].counter.innerHTML = value+1;
+                    }
+                }
+            }
+        }
+        
+
+        dice_on = false;
+        end_on = true;
+    }
+}
+
+function house_button(){
+    if(turn==main_player && player_hands[turn][0] && player_hands[turn][2]
+        && player_hands[turn][3] && player_hands[turn][4]){
+            
+            let removeList = [0,2,3,4];
+            for(let i=0; i<4; i++){
+                player_hands[turn][removeList[i]]-=1;
+
+                cards[removeList[i]].counter.innerHTML = player_hands[turn][removeList[i]];
+
+                if(!player_hands[turn][removeList[i]]){
+                    cards[removeList[i]].turnOff();
+                }
+            }
+            show_placement_buttons();
+        }
+}
+
+function city_button(){
+    if(turn==main_player && player_hands[turn][1]>=3 && player_hands[turn][2]>=2){
+        for(let i=1; i<3; i++){
+            player_hands[turn][i]-=3;
+    
+            cards[i].counter.innerHTML = player_hands[turn][i];
+    
+            if(!player_hands[turn][i]){
+                cards[i].turnOff();
+            }
+        }
+        show_city_buttons();
     }
 }
 
@@ -157,32 +300,6 @@ for(let p of hex_map){
     p.draw(ctx);
 }
 
-
-//Gameloop
-
-function start_turn(){
-    turn = 1;
-    dice_on = true;
-    end_on = false;
-}
-
-function dice_click(){
-    if(turn){
-        let s1 = jsn.randint(1,7);
-        let s2 = jsn.randint(1,7);
-
-        let value = s1+s2;
-        roll_display.innerHTML = "Roll:" + (s1+s2).toString();
-        diceOne.innerHTML = "<img src='" + dice_faces[s1-1] + "'>"
-        diceTwo.innerHTML = "<img src='" + dice_faces[s2-1] + "'>"
-        for(let i=0; i<hex_map.length; i++){
-            if(hex_map[i].number == value){
-                player_hand.push(new Resource(hex_map[i].resource));
-            }
-        }
-        
-
-        dice_on = false;
-        end_on = true;
-    }
-}
+//start
+start_turn(0);
+show_placement_buttons();

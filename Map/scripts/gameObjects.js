@@ -26,16 +26,19 @@ class Vertex{
         this.button_id = id[0].toString() + id[1].toString();
         this.hex_arr = [];
         this.button;
-        this.house;
+        this.house; //if its a normal house it equals the player turn and otherwise it equals it +10
+        this.image;
     }
 }
 
 class Card{
-    constructor(resource){
+    constructor(resource, i){
         this.resource = resource;
         //create button
         this.button = document.createElement("button");
         document.body.appendChild(this.button);
+
+        let left = (50+i*(card_width+10)).toString();
 
         //create display image
         this.image = document.createElement("img");
@@ -44,19 +47,38 @@ class Card{
         //the image has the same dimensions as the button, adjusted to fit inside it (subtracts the border width)
         this.image.style = "width: " + (card_width-3*2).toString()+"px; height: "+ 
         (card_height-2*3).toString()+"px; position:absolute; top:0px; left:0px;";
-        let i = player_hand.length;
-        let row = Math.floor(player_hand.length/row_cap);
+
+        //counter that tracks how much of the given card the player has
+        this.counter = document.createElement("div");
+        this.button.appendChild(this.counter);
+        this.counter.style = "position:absolute; top:" + (card_height+5).toString() + "px; + left:" + left + "px;" +
+        "text-align:center; font-size:30px; width:" + (50).toString() + "px;" ;
+        this.counter.innerHTML = "0";
+
         //style the button
         this.button.style="height: " + (card_height).toString()+"px; width:" + (card_width).toString() +
         "px; position:absolute; border:3px solid black; top:" + 
-        (canvas.height+50+row*(card_height+27)).toString() + "px; left:" + 
-        (i*card_width-row*row_cap*card_width).toString()+"px;";
+        (canvas.height+60).toString() + "px; left:" + left+"px;";
+
+        this.turnOff();
+    }
+
+    turnOn(){
+        this.button.style.display = 'block';
+        this.image.style.visibility='visible';
+        this.counter.style.display = "block";
+    }
+
+    turnOff(){
+        this.button.style.display = 'none';
+        this.image.style.visibility='hidden';
+        this.counter.style.display="none";
     }
 }
 
 class Resource extends Card{
-    constructor(resource){
-        super(resource);
+    constructor(resource, i){
+        super(resource, i);
         this.button.onclick = this.onclick;
     }
 

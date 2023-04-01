@@ -13,11 +13,21 @@
     <div id="rollresult">Roll:0</div>
     <div id="diceone"></div>
     <div id="dicetwo"></div>
-    <img src="recipe.png" class="actionButtons" style="top: 275px;"/>
-    <img src="road.png" class="actionButtons" style="top: 335px;"/>
-    <img src="house.png" class="actionButtons" style="top: 395px;"/>
-    <img src="city.png" class="actionButtons" style="top: 455px;"/>
-    <img src="trade.png" class="actionButtons" style="top: 515px;"/>
+    <button class="actionButtons" style="top: 275px;">
+    <img src="recipe.png" style="width:45px; height:45px"/>
+    </button>
+    <button class="actionButtons" style="top: 335px;">
+    <img src="road.png" style="width:45px; height:45px"/>
+    </button>
+    <button id="houseButton" onclick="house_button()" class="actionButtons" style="top: 395px;">
+    <img src="house.png" style="width:45px; height:45px"/>
+    </button>
+    <button id="cityButton" onclick="city_button()" class="actionButtons" style="top: 455px;">
+    <img src="city.png" style="width:45px; height:45px"/>
+    </button>
+    <button class="actionButtons" style="top: 515px;">
+    <img src="trade.png" style="width:45px; height:45px"/>
+    </button>
     <script src="./scripts/imports.js"></script>
     <script src="./scripts/Polygon.js"></script>
     <script src="./scripts/gameObjects.js"></script>

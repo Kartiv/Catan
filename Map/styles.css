@@ -64,3 +64,6 @@ canvas{
     width: 50px;
     padding: 0%;
 }
+.actionButtons:active{
+    background-color: gray;
+}
