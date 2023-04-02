@@ -12,6 +12,7 @@ const map_font_size = Math.floor(hex_width/2); //fontsize of numbers
 const tile_textures = ['green', 'gray', 'gold', 'brown', 'beige', 'black']; //the indices are associated with resources
 const dice_faces = ['DiceOne.png','DiceTwo.png','DiceThree.png','DiceFour.png','DiceFive.png','DiceSix.png'] //list of the photos for the dies
 var vertex_list = []; //list of the vertices- each vertex knows its neighboring hexes and its relevant button
+var edge_list = []; //list of the edges
 var vert_dict = {}; //dictionary of the vertices where the keys are their buttons' id's
 var hex_map = []; //list of the hexagon elements
 const house_size = 30;
@@ -23,6 +24,7 @@ const card_width = 70;
 const card_height = Math.ceil(card_width*2**0.5);
 const row_cap = 16; //number of cards in a row
 const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'sheep.png', 'purple'];
+var dev_cards = [5, 14, 2, 2, 2] //indices are associated point-knight-monopoly-resource-road
 
 //dice variables
 var dice_on = true; //controls if the dice are clickable
@@ -36,8 +38,17 @@ var turn = 0;
 var main_player = 0;
 var end_on = false; //controls if end turn button is clickable
 var player_hands = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]; //tree-stone-wheat-bricks-sheep
+var player_devs = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]] //point-knight-monopoly-resource-road
+var player_roads = [[], [], [], [], []];
 var victory_points = [0,0,0,0,0];
-var cards = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
+var card_display = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
+var dev_display = [];
+
+//statistics
+var dice_stats = [];
+for(let i=2; i<13; i++){
+    dice_stats.push(0);
+}
 
 //map generation
 
@@ -111,6 +122,26 @@ function map_generation(){
 
     for(let i=0; i<hex_grid.length; i++){ //create map
         map.push(new Tile(hex_grid[i], numbers[i], resources[i]));
+    }
+
+    //creating edge list
+    for(let i=0; i<map.length; i++){
+        let verts = map[i].poly.vertices;
+        for(let j=0; j<verts.length; j++){
+            let mid = verts[j].add(verts[(j+1)%verts.length]).scale(1/2);
+            let x = Math.round(mid.coords[0]);
+            let y = Math.round(mid.coords[1]);
+
+            let flag = true;
+            for(let k=0; k<edge_list.length; k++){
+                if(edge_list[k].id == x.toString()+y.toString()){
+                    flag = false;
+                }
+            }
+            if(flag){
+                edge_list.push(new Edge(x, y, verts[j], verts[(j+1)%verts.length]));
+            }
+        }
     }
 
     return map;
@@ -191,6 +222,9 @@ function add_point(turn){
     victory_points[turn] +=1;
 }
 
+function check_road(player){ //this is basically a travelling salesmen problem. for now ignore
+    return;
+}
 
 //Buttons
 
@@ -216,12 +250,28 @@ function hide_placement_buttons(){
     }
 }
 
+function show_road_buttons(){
+    for(let edge of edge_list){
+        if(edge.road == null){
+            edge.button.style.display = "block";
+        }
+    }
+}
+
+function hide_road_buttons(){
+    for(let edge of edge_list){
+        edge.button.style.display = "none";
+    }
+}
+
 function dice_click(){
     if(turn==main_player){
         let s1 = jsn.randint(1,7);
         let s2 = jsn.randint(1,7);
 
         let value = s1+s2;
+        dice_stats[value-2]+=1;
+        console.log(dice_stats);
         roll_display.innerHTML = "Roll:" + (s1+s2).toString();
         diceOne.innerHTML = "<img src='" + dice_faces[s1-1] + "'>"
         diceTwo.innerHTML = "<img src='" + dice_faces[s2-1] + "'>"
@@ -244,10 +294,10 @@ function dice_click(){
 
                         let value = player_hands[player][resource];
                         if(!value){
-                            cards[resource].turnOn();
+                            card_display[resource].turnOn();
                         }
                         player_hands[player][resource]+=double;
-                        cards[resource].counter.innerHTML = value+1;
+                        card_display[resource].counter.innerHTML = value+1;
                     }
                 }
             }
@@ -264,13 +314,13 @@ function house_button(){
         && player_hands[turn][3] && player_hands[turn][4]){
             
             let removeList = [0,2,3,4];
-            for(let i=0; i<4; i++){
+            for(let i=0; i<removeList.length; i++){
                 player_hands[turn][removeList[i]]-=1;
 
-                cards[removeList[i]].counter.innerHTML = player_hands[turn][removeList[i]];
+                card_display[removeList[i]].counter.innerHTML = player_hands[turn][removeList[i]];
 
                 if(!player_hands[turn][removeList[i]]){
-                    cards[removeList[i]].turnOff();
+                    card_display[removeList[i]].turnOff();
                 }
             }
             show_placement_buttons();
@@ -282,14 +332,60 @@ function city_button(){
         for(let i=1; i<3; i++){
             player_hands[turn][i]-=3;
     
-            cards[i].counter.innerHTML = player_hands[turn][i];
+            card_display[i].counter.innerHTML = player_hands[turn][i];
     
             if(!player_hands[turn][i]){
-                cards[i].turnOff();
+                card_display[i].turnOff();
             }
         }
         show_city_buttons();
     }
+}
+
+function road_button(){
+    if(turn==main_player && player_hands[turn][0] && player_hands[turn][3]){
+        for(let i=0; i<4; i+=3){
+            player_hands[turn][i]-=1;
+    
+            card_display[i].counter.innerHTML = player_hands[turn][i];
+    
+            if(!player_hands[turn][i]){
+                card_display[i].turnOff();
+            }
+        }
+        show_road_buttons();
+    }
+}
+
+function dev_button(){
+    if(turn==main_player && player_hands[turn][1] && player_hands[turn][2] && player_hands[turn][4]){
+            
+            let removeList = [1,2,4];
+            for(let i=0; i<removeList.length; i++){
+                player_hands[turn][removeList[i]]-=1;
+
+                card_display[removeList[i]].counter.innerHTML = player_hands[turn][removeList[i]];
+
+                if(!player_hands[turn][removeList[i]]){
+                    card_display[removeList[i]].turnOff();
+                }
+            }
+
+            //add random dev card
+            let total = dev_cards.reduce((pv, cv)=>(pv+cv), 0);
+            console.log(total);
+            let s1 = jsn.random(0,1);
+            let p = 0;
+
+            for(let i=0; i<dev_cards.length; i++){
+                if(s1<p+dev_cards[i]/total && dev_cards[i]>0){
+                    dev_cards[i]-=1;
+                    player_devs[turn][i]+=1;
+                    break;
+                }
+                p+=dev_cards[i]/total;
+            }
+        }
 }
 
 //create and draw map

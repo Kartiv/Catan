@@ -31,6 +31,42 @@ class Vertex{
     }
 }
 
+class Edge{
+    constructor(x, y, vert1, vert2){
+        this.x = x;
+        this.y = y;
+        this.vert1 = vert1;
+        this.vert2 = vert2;
+        this.id = this.x.toString() + this.y.toString();
+        this.road;
+        
+        this.button = document.createElement("button");
+        document.body.appendChild(this.button);
+
+        this.button.style = "position: absolute; top:" + y.toString() + "px; left:" + x.toString() + 
+        "px; width:20px; height:20px;" + "border-radius:16px;";
+        this.button.style.display = 'none';
+
+        this.button.onclick = (e)=>{
+            if(turn == main_player){
+                player_roads[turn].push(this);
+                check_road(turn);
+                ctx.strokeStyle = player_colors[turn];
+                ctx.lineWidth = 7;
+                ctx.beginPath();
+                ctx.moveTo(vert1.coords[0], vert1.coords[1]);
+                ctx.lineTo(vert2.coords[0], vert2.coords[1]);
+                ctx.stroke();
+                ctx.closePath();
+
+                this.road = turn;
+
+                hide_road_buttons();
+            }
+        }
+    }
+}
+
 class Card{
     constructor(resource, i){
         this.resource = resource;
