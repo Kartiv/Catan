@@ -40,6 +40,7 @@ var end_on = false; //controls if end turn button is clickable
 var player_hands = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]; //tree-stone-wheat-bricks-sheep
 var player_devs = [[0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0], [0,0,0,0,0]] //point-knight-monopoly-resource-road
 var player_roads = [[], [], [], [], []];
+var longest_roads = [0,0,0,0,0];
 var victory_points = [0,0,0,0,0];
 var card_display = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
 var dev_display = [];
@@ -222,10 +223,6 @@ function add_point(turn){
     victory_points[turn] +=1;
 }
 
-function check_road(player){ //this is basically a travelling salesmen problem. for now ignore
-    return;
-}
-
 //Buttons
 
 function show_placement_buttons(){
@@ -386,6 +383,84 @@ function dev_button(){
                 p+=dev_cards[i]/total;
             }
         }
+}
+
+//longest road stuff. WARNING - THIS SHIT INEFFICIENT AS SHIT. AVERT YOUR EYES AND KEEP AWAY FROM CHILDREN
+
+//find longest path in map starting at a
+function longest_road_from_starting_point_a(map, a, path=[]){
+
+    if(!path.length){
+        path = [a];
+    }
+
+    let max = path.length-1;
+
+    for(let i of map[a]){
+        if(i==path[0]){
+            let k = path.length;
+            if(k!=2 && k>max){
+                max = k;
+            }
+        }
+        else if(!jsn.inArr(path, i)){
+            let k = longest_road_from_starting_point_a(map, i, path.concat(i))
+            if(k>max){
+                max = k;
+            }
+        }
+        else{
+            let k = path.length-1;
+            if(k>max){
+                max = k;
+            }
+        }
+    }
+
+    return max;
+
+}
+
+function create_dictionary_map_list_thing(player){
+    let edges = player_roads[player];
+    
+    let map_thing = {};
+    for(let edge of edges){
+
+        let id1 = Math.round(edge.vert1.coords[0]).toString() + Math.round(edge.vert1.coords[1]).toString();
+        let id2 = Math.round(edge.vert2.coords[0]).toString() + Math.round(edge.vert2.coords[1]).toString();
+
+        if(map_thing[id1]){
+            map_thing[id1].push(id2);
+        }
+        else{
+            map_thing[id1] = [id2];
+        }
+
+        if(map_thing[id2]){
+            map_thing[id2].push(id1);
+        }
+        else{
+            map_thing[id2] = [id1];
+        }
+    }
+
+    return map_thing;
+}
+
+function check_longest_road(player){
+    let dict = create_dictionary_map_list_thing(player);
+    let max = -1;
+    let keys = Object.keys(dict);
+    for(let i=0; i<keys.length; i++){
+        let k = longest_road_from_starting_point_a(dict, keys[i]);
+        if(k>max){
+            max = k;
+        }
+    }
+    if(max>longest_roads[player]){
+        longest_roads[player] = max;
+    }
 }
 
 //create and draw map
