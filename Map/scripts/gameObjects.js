@@ -123,8 +123,8 @@ class Resource extends Card{
 }
 
 class Devcard extends Card{
-    constructor(resource){
-        super(resource);
+    constructor(resource, i){
+        super(resource, i);
         this.button.onclick = this.onclick;
     }
 

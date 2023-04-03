@@ -23,7 +23,7 @@ const hand_left = 750; //same with left
 const card_width = 70;
 const card_height = Math.ceil(card_width*2**0.5);
 const row_cap = 16; //number of cards in a row
-const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'sheep.png', 'purple'];
+const card_textures = ['tree.png', 'stone.png', 'wheat.png', 'bricks.png', 'sheep.png', 'point.png', 'knight.png', 'monopoly.png', 'resources.png', 'extra_roads.png'];
 var dev_cards = [5, 14, 2, 2, 2] //indices are associated point-knight-monopoly-resource-road
 
 //dice variables
@@ -43,7 +43,7 @@ var player_roads = [[], [], [], [], []];
 var longest_roads = [0,0,0,0,0];
 var victory_points = [0,0,0,0,0];
 var card_display = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
-var dev_display = [];
+var dev_display = [new Devcard(5,5),new Devcard(6,6),new Devcard(7,7),new Devcard(8,8),new Devcard(9,9)];
 
 //statistics
 var dice_stats = [];
@@ -223,6 +223,10 @@ function add_point(turn){
     victory_points[turn] +=1;
 }
 
+function check_road(player){ //this is basically a travelling salesmen problem. for now ignore
+    return;
+}
+
 //Buttons
 
 function show_placement_buttons(){
@@ -370,18 +374,26 @@ function dev_button(){
 
             //add random dev card
             let total = dev_cards.reduce((pv, cv)=>(pv+cv), 0);
-            console.log(total);
             let s1 = jsn.random(0,1);
             let p = 0;
-
+            let dev_index = 0;
             for(let i=0; i<dev_cards.length; i++){
                 if(s1<p+dev_cards[i]/total && dev_cards[i]>0){
                     dev_cards[i]-=1;
-                    player_devs[turn][i]+=1;
+                    dev_index = i;
                     break;
                 }
                 p+=dev_cards[i]/total;
             }
+            let value = player_devs[turn][dev_index];
+            if(!value){
+                dev_display[dev_index].turnOn();
+            }
+            if(!dev_index){
+                add_point(turn);
+            }
+            player_devs[turn][dev_index]+=1;
+            dev_display[dev_index].counter.innerHTML = value+1;   
         }
 }
 
@@ -460,7 +472,7 @@ function check_longest_road(player){
     }
     if(max>longest_roads[player]){
         longest_roads[player] = max;
-    }
+        }
 }
 
 //create and draw map
