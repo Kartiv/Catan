@@ -243,6 +243,89 @@ class jsn{
         return a;
     }
 
+        /**
+     * 
+     * @param {*dictionary} map dictionary where every key corresponds to list of available nodes to travel to from it
+     * @param {*any} a start point
+     * @param {*any} b end point
+     * @param {*null} path dont input anything here, recursion variable 
+     * @returns Shortest path from a to b in the given map
+     */
+    static salesman(map,a,b, path = []){
+
+        if(!path.length){
+            path = [a];
+        }
+
+        if(a==b){
+            return path;
+        }
+
+        let finalists = [];
+
+        for(let i of map[a]){
+            if(!jsn.inArr(path, i)){
+                let new_path = salesman(map, i, b, path.concat(i));
+                if(new_path.length){
+                    finalists.push(salesman(map, i, b, path.concat(i)));
+                }
+            }
+        }
+
+        //finds shortest path
+        let min = Infinity;
+        let min_path = [];
+        for(let i=0; i<finalists.length; i++){
+            if(finalists[i].length<min){
+                min_path = finalists[i];
+                min = finalists[i].length;
+            }
+        }
+
+        return min_path;
+    }
+
+    /**
+     * 
+     * @param {*dictionary} map dictionary where every key corresponds to list of available nodes to travel to from it
+     * @param {*any} a start point
+     * @param {*any} b end point
+     * @param {*null} path dont input anything here, recursion variable 
+     * @returns Longest path from a to b in the given map
+     */
+    static badSalesman(map, a, b, path = []){
+        
+        if(!path.length){
+            path = [a];
+        }
+
+        if(a==b){
+            return path;
+        }
+
+        let finalists = [];
+
+        for(let i of map[a]){
+            if(!jsn.inArr(path, i)){
+                let new_path = badSalesman(map, i, b, path.concat(i));
+                if(new_path.length){
+                    finalists.push(badSalesman(map, i, b, path.concat(i)));
+                }
+            }
+        }
+
+        //finds longest path
+        let max = -1;
+        let max_path = [];
+        for(let i=0; i<finalists.length; i++){
+            if(finalists[i].length>max){
+                max_path = finalists[i];
+                max = finalists[i].length;
+            }
+        }
+
+        return max_path;
+    }
 }
 
 class Vector{ //vector class
@@ -493,7 +576,6 @@ class Matrix{
         return new Matrix([[Math.cos(theta), -Math.sin(theta)],[Math.sin(theta),Math.cos(theta)]]);
     }
 }
-
 
 class Graph{
     /**

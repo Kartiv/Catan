@@ -50,7 +50,6 @@ class Edge{
         this.button.onclick = (e)=>{
             if(turn == main_player){
                 player_roads[turn].push(this);
-                check_road(turn);
                 ctx.strokeStyle = player_colors[turn];
                 ctx.lineWidth = 7;
                 ctx.beginPath();
@@ -60,7 +59,7 @@ class Edge{
                 ctx.closePath();
 
                 this.road = turn;
-
+                check_longest_road(turn);
                 hide_road_buttons();
             }
         }
