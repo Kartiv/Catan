@@ -3,6 +3,10 @@ class Tile{
         this.poly = polygon;
         this.resource = resource;
         this.number = number;
+        this.robber = false;
+        if(this.number == 7){
+            this.robber = true;
+        }
     }
 
     draw(ctx){ //draw the outline and fill with the correct color + draw text
@@ -24,7 +28,7 @@ class Vertex{
     constructor(id){
         this.id = id;
         this.button_id = id[0].toString() + id[1].toString();
-        this.hex_arr = [];
+        this.hexArr = [];
         this.button;
         this.house; //if its a normal house it equals the player turn and otherwise it equals it +10
         this.image;
@@ -48,6 +52,7 @@ class Edge{
         this.button.style.display = 'none';
 
         this.button.onclick = (e)=>{
+            let turn = game.currentTurn;
             if(turn == main_player){
                 player_roads[turn].push(this);
                 ctx.strokeStyle = player_colors[turn];
