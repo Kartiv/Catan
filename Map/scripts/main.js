@@ -68,7 +68,7 @@ function map_generation(){
 
     //create the hexagons
     let hex_grid = [];
-    for(let i=3; i<6; i++){ //creating top half of hexagon
+    for(let i=3; i<6; i++){ //creating top half of hexagons
         for(let j=0; j<i; j++){
             hex_grid.push(Polygon.createHex(map_left-hex_width*3**0.5/4*i+j*hex_width*3**0.5/2, //every row gets shifted left
                                         map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
@@ -223,10 +223,6 @@ function add_point(turn){
     victory_points[turn] +=1;
 }
 
-function check_road(player){ //this is basically a travelling salesmen problem. for now ignore
-    return;
-}
-
 //Buttons
 
 function show_placement_buttons(){
@@ -272,7 +268,7 @@ function dice_click(){
 
         let value = s1+s2;
         dice_stats[value-2]+=1;
-        console.log(dice_stats);
+
         roll_display.innerHTML = "Roll:" + (s1+s2).toString();
         diceOne.innerHTML = "<img src='" + dice_faces[s1-1] + "'>"
         diceTwo.innerHTML = "<img src='" + dice_faces[s2-1] + "'>"
