@@ -58,24 +58,24 @@ function house_button(){
     if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[2]
         && game.players[turn].resourceCards[3] && game.players[turn].resourceCards[4]){
 
-            add_card(turn, [0,2,3,4], [-1,-1,-1,-1]);
-            show_placement_buttons();
+            game.players[turn].addResource(turn, [0,2,3,4], [-1,-1,-1,-1]);
+            mapDisplayer.show_placement_buttons();
         }
 }
 
 function city_button(){
     let turn = game.currentTurn;
     if(turn==main_player && game.players[turn].resourceCards[1]>=3 && game.players[turn].resourceCards[2]>=2){
-        add_card(turn, [1,2], [-3,-2]);
-        show_city_buttons();
+        game.players[turn].addResource(turn, [1,2], [-3,-2]);
+        mapDisplayer.show_city_buttons();
     }
 }
 
 function road_button(){
     let turn = game.currentTurn;
     if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[3]){
-        add_card(turn, [0,3], [-1,-1]);
-        show_road_buttons();
+        game.players[turn].addResource([0,3], [-1,-1]);
+        mapDisplayer.show_road_buttons();
     }
 }
 
@@ -83,7 +83,7 @@ function dev_button(){
     let turn = game.currentTurn;
     if(turn==main_player && game.players[turn].resourceCards[1] && game.players[turn].resourceCards[2] && game.players[turn].resourceCards[4]){
             
-        add_card(turn, [1,2,4], [-1,-1,-1]);
+        game.players[turn].addResource([1,2,4], [-1,-1,-1]);
 
         //add random dev card
         let total = dev_cards.reduce((pv, cv)=>(pv+cv), 0);
@@ -103,7 +103,7 @@ function dev_button(){
             devDisplay[dev_index].turnOn();
         }
         if(!dev_index){
-            add_point(turn);
+            game.players[turn].add_point();
         }
         game.players[turn].devCards[dev_index]+=1;
         devDisplay[dev_index].counter.innerHTML = value+1;   

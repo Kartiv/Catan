@@ -51,7 +51,7 @@ class MapDisplayer{
                 game.currentPlayer.addPoint(); //add victory point to current player
 
                 var img = document.createElement("img");
-                img.src="house.png";
+                img.src=houseTextures[turn];
                 img.style = "width: " + (house_size).toString()+"px; height: "+ 
                 (house_size).toString()+"px; position:absolute; top:" + (vert.id[1]-5).toString() + "px;" + 
                 "left:" + (vert.id[0]-5).toString() + "px;";
@@ -66,8 +66,8 @@ class MapDisplayer{
         else{
             if(vert.house == turn){
                 vert.house+=10;
-                add_point(turn);
-                vert.image.src = "city.png";
+                game.players[turn].addPoint();
+                vert.image.src = cityTextures[turn];
                 this.hide_placement_buttons();
             }
         }

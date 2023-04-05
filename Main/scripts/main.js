@@ -36,6 +36,9 @@ var end_on = false; //controls if end turn button is clickable
 var cardDisplay = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
 var devDisplay = [new Devcard(5,5),new Devcard(6,6),new Devcard(7,7),new Devcard(8,8),new Devcard(9,9)];
 
+const houseTextures = ['Assets/redhouse.png', 'Assets/bluehouse.png', 'Assets/greenhouse.png', 'Assets/greyhouse.png', 'Assets/purplehouse.png'];
+const cityTextures = ['Assets/redcity.png', 'Assets/bluecity.png', 'Assets/greencity.png', 'Assets/greycity.png', 'Assets/purplecity.png'];
+
 var game;
 var map;
 var mapDisplayer;
