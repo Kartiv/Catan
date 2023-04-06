@@ -48,8 +48,9 @@ class MapDisplayer{
 
             if(flag){ //make house or something brr
                 vert.house = turn;
+                game.players[turn].houses.push(vert.button_id);
                 game.currentPlayer.addPoint(); //add victory point to current player
-
+                
                 var img = document.createElement("img");
                 img.src=houseTextures[turn];
                 img.style = "width: " + (house_size).toString()+"px; height: "+ 
@@ -57,8 +58,12 @@ class MapDisplayer{
                 "left:" + (vert.id[0]-5).toString() + "px;";
                 vert.image = img;
                 document.body.appendChild(img);
-
+                
                 this.hide_placement_buttons();
+
+                if(game.startingTurns){
+                    this.show_road_buttons();
+                }
             }
 
         }
@@ -76,9 +81,19 @@ class MapDisplayer{
 
     
     show_placement_buttons(){
-        for(let i of this.map.vertexList){
-            if(i.house == null){
-                i.button.style.display = "block";
+        if(game.startingTurns){
+            for(let i of this.map.vertexList){
+                if(i.house == null){
+                    i.button.style.display = "block";
+                }
+            }
+        }
+        else{
+            let legalHouses = create_dictionary_map_list_thing(game.currentTurn);
+            for(let i of legalHouses){
+                if(i.house == null){
+                    i.button.style.display = "block";
+                }
             }
         }
     }
@@ -98,16 +113,46 @@ class MapDisplayer{
     }
 
     show_road_buttons(){
-        for(let edge of this.map.edgeList){
-            if(edge.road == null){
-                edge.button.style.display = "block";
+
+        //pverts is all of the vertices that the player has road access to
+        let pverts;
+        if(game.startingTurns){
+            if(game.players[game.currentTurn].houses.length==1){
+                pverts = this.map.vertDict[game.players[game.currentTurn].houses[0]];
             }
+            else{
+                pverts = this.map.vertDict[game.players[game.currentTurn].houses[1]];
+            }
+            pverts = create_dictionary_map_list_thing(game.currentTurn);
+        }
+        else{
+            pverts = create_dictionary_map_list_thing(game.currentTurn);
+        }
+        for(let key of Object.keys(pverts)){
+
+            //calculating EXACT location (for id) of each adjacent edge, and there are two cases each with 3 edges (\|/ or /|\)
+            let x = hex_width/4 * Math.cos(Math.PI/6);
+            let y = hex_width/4 * Math.sin(Math.PI/6);
+
+            let possibleEdges = [calculateID(this.map.vertDict[key].x+x, this.map.vertDict[key].y-y), 
+            calculateID(this.map.vertDict[key].x-x, this.map.vertDict[key].y-y), calculateID(this.map.vertDict[key].x, this.map.vertDict[key].y+hex_width/4),
+            calculateID(this.map.vertDict[key].x, this.map.vertDict[key].y-hex_width/4), calculateID(this.map.vertDict[key].x+x, this.map.vertDict[key].y+y),
+            calculateID(this.map.vertDict[key].x-x, this.map.vertDict[key].y+y)];  
+
+            for(let edge of possibleEdges){
+                if(this.map.edgeDict[edge]){ //if its even on the map
+                    if(this.map.edgeDict[edge].road==null){ // if vertex doesnt have a road
+                        this.map.edgeDict[edge].button.style.display = 'block';
+                    }
+                }
+            }
+
         }
     }
 
     hide_road_buttons(){
-        for(let edge of this.map.edgeList){
-            edge.button.style.display = "none";
+        for(let id of Object.keys(this.map.edgeDict)){
+            this.map.edgeDict[id].button.style.display = "none";
         }
     }
 }

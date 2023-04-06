@@ -1,8 +1,10 @@
 class Game{
     players;
-    currentTurn = 0
+    currentTurn = 0;
+    startingTurns = true;
     constructor(players){
         this.players = players
+        this.bank = new Bank();
     }
 
     get currentPlayer(){

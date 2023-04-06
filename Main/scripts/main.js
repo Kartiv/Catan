@@ -20,8 +20,7 @@ const hand_left = 750; //same with left
 const card_width = 70;
 const card_height = Math.ceil(card_width*2**0.5);
 const row_cap = 16; //number of cards in a row
-const card_textures = ['Assets/tree.png', 'Assets/stone.png', 'Assets/wheat.png', 'Assets/bricks.png', 'Assets/sheep.png', 'Assets/point.png', 'Assets/knight.png', 'Assets/monopoly.png', 'Assets/resources.png', 'Assets/extra_roads.png'];
-var dev_cards = [5, 14, 2, 2, 2] //indices are associated point-knight-monopoly-resource-road
+const cardTextures = ['Assets/tree.png', 'Assets/stone.png', 'Assets/wheat.png', 'Assets/bricks.png', 'Assets/sheep.png', 'Assets/point.png', 'Assets/knight.png', 'Assets/monopoly.png', 'Assets/resources.png', 'Assets/extra_roads.png'];
 
 //dice variables
 var dice_on = true; //controls if the dice are clickable

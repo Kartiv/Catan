@@ -37,6 +37,10 @@ function create_dictionary_map_list_thing(player){
     let edges = game.players[player].roads;
     
     let map_thing = {};
+    for(let i=0; i<game.players[player].houses.length; i++){
+        map_thing[game.players[player].houses[i]] = [];
+    }
+    
     for(let edge of edges){
 
         let id1 = Math.round(edge.vert1.coords[0]).toString() + Math.round(edge.vert1.coords[1]).toString();

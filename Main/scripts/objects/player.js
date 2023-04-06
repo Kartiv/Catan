@@ -5,6 +5,7 @@ class Player{
     resourceCards = [0,0,0,0,0]
     devCards = [0,0,0,0,0]
     roads = []
+    houses = []
     longestRoad = 0
     victoryPoints = 0
     constructor(name, color){
@@ -20,6 +21,9 @@ class Player{
 
     addDev(dev){
         this.devCards[dev]+=1;
+        if(dev==0){
+            this.addPoint();
+        }
     }
 
     addPoint(n=1){

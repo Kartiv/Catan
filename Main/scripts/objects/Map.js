@@ -1,6 +1,6 @@
 class Map{
     vertexList = []; //list of the vertices- each vertex knows its neighboring hexes and its relevant button
-    edgeList = []; //list of the edges
+    edgeDict = {}; //list of the edges
     vertDict = {}; //dictionary of the vertices where the keys are their buttons' id's
     hexMap = []; //list of the hexagon elements
 
@@ -32,7 +32,7 @@ class Map{
                     let vert = hexGrid[hexGrid.length-1].vertices[k];
                     let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
                     if(!(this.compareID(id, hexGrid))){
-                        this.vertexList.push(new Vertex(id));
+                        this.vertexList.push(new Vertex(id, vert.coords[0], vert.coords[1]));
                         this.vertexList[this.vertexList.length-1].hexArr.push(hexGrid[hexGrid.length-1]);
                     }
                 }
@@ -47,7 +47,7 @@ class Map{
                     let vert = hexGrid[hexGrid.length-1].vertices[k];
                     let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
                     if(!(this.compareID(id, hexGrid))){
-                        this.vertexList.push(new Vertex(id));
+                        this.vertexList.push(new Vertex(id, vert.coords[0], vert.coords[1]));
                         this.vertexList[this.vertexList.length-1].hexArr.push(hexGrid[hexGrid.length-1]);
                     }
                 }          
@@ -87,15 +87,16 @@ class Map{
                 let mid = verts[j].add(verts[(j+1)%verts.length]).scale(1/2);
                 let x = Math.round(mid.coords[0]);
                 let y = Math.round(mid.coords[1]);
+                let id = x.toString()+y.toString();
     
                 let flag = true;
-                for(let k=0; k<this.edgeList.length; k++){
-                    if(this.edgeList[k].id == x.toString()+y.toString()){
+                for(let k of Object.keys(this.edgeDict)){
+                    if(this.edgeDict[k].id == id){
                         flag = false;
                     }
                 }
                 if(flag){
-                    this.edgeList.push(new Edge(x, y, verts[j], verts[(j+1)%verts.length]));
+                    this.edgeDict[id] = (new Edge(x, y, verts[j], verts[(j+1)%verts.length]));
                 }
             }
         }

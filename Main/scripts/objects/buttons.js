@@ -21,14 +21,27 @@ function updateDiceDisplay(s1,s2){
 
 function updateCardDisplay(player){
     for(let i=0; i<cardDisplay.length; i++){
+        cardDisplay[i].counter.innerHTML = game.players[player].resourceCards[i];
         if(game.players[player].resourceCards[i]){
-            cardDisplay[i].counter.innerHTML = game.players[player].resourceCards[i];
-            if(game.players[player].resourceCards[i]){
-                cardDisplay[i].turnOn();
-            }
-            else{
-                cardDisplay[i].turnOff();
-            }
+            cardDisplay[i].turnOn();
+        }
+
+
+        else{
+            cardDisplay[i].turnOff();
+        }
+    }
+}
+
+function updateDevDisplay(player){
+    for(let i=0; i<devDisplay.length; i++){
+        if(game.players[player].devCards[i]){
+            devDisplay[i].counter.innerHTML = game.players[player].devCards[i];
+            devDisplay[i].turnOn();
+        }
+
+        else{
+            devDisplay[i].turnOff();
         }
     }
 }
@@ -58,7 +71,9 @@ function house_button(){
     if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[2]
         && game.players[turn].resourceCards[3] && game.players[turn].resourceCards[4]){
 
-            game.players[turn].addResource(turn, [0,2,3,4], [-1,-1,-1,-1]);
+            game.players[turn].addResource([0,2,3,4], [-1,-1,-1,-1]);
+            updateCardDisplay(turn);
+
             mapDisplayer.show_placement_buttons();
         }
 }
@@ -66,7 +81,9 @@ function house_button(){
 function city_button(){
     let turn = game.currentTurn;
     if(turn==main_player && game.players[turn].resourceCards[1]>=3 && game.players[turn].resourceCards[2]>=2){
-        game.players[turn].addResource(turn, [1,2], [-3,-2]);
+        game.players[turn].addResource([1,2], [-3,-2]);
+        updateCardDisplay(turn);
+
         mapDisplayer.show_city_buttons();
     }
 }
@@ -75,6 +92,8 @@ function road_button(){
     let turn = game.currentTurn;
     if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[3]){
         game.players[turn].addResource([0,3], [-1,-1]);
+        updateCardDisplay(turn);
+
         mapDisplayer.show_road_buttons();
     }
 }
@@ -84,28 +103,23 @@ function dev_button(){
     if(turn==main_player && game.players[turn].resourceCards[1] && game.players[turn].resourceCards[2] && game.players[turn].resourceCards[4]){
             
         game.players[turn].addResource([1,2,4], [-1,-1,-1]);
+        updateCardDisplay(turn);
 
         //add random dev card
-        let total = dev_cards.reduce((pv, cv)=>(pv+cv), 0);
+        let total = game.bank.devCards.reduce((pv, cv)=>(pv+cv), 0);
         let s1 = jsn.random(0,1);
         let p = 0;
-        let dev_index = 0;
-        for(let i=0; i<dev_cards.length; i++){
-            if(s1<p+dev_cards[i]/total && dev_cards[i]>0){
-                dev_cards[i]-=1;
-                dev_index = i;
+        let devIndex = 0;
+        for(let i=0; i<game.bank.devCards.length; i++){
+            if(s1<p+game.bank.devCards[i]/total && game.bank.devCards[i]>0){
+                game.bank.devCards[i]-=1;
+                devIndex = i;
+                game.players[turn].addDev(devIndex);
                 break;
             }
-            p+=dev_cards[i]/total;
+            p+=game.bank.devCards[i]/total;
         }
-        let value = game.players[turn].devCards[dev_index];
-        if(!value){
-            devDisplay[dev_index].turnOn();
-        }
-        if(!dev_index){
-            game.players[turn].add_point();
-        }
-        game.players[turn].devCards[dev_index]+=1;
-        devDisplay[dev_index].counter.innerHTML = value+1;   
+
+        updateDevDisplay(turn);
     }
 }
