@@ -78,7 +78,6 @@ class MapDisplayer{
         }
         
     }
-
     
     show_placement_buttons(){
         if(game.startingTurns){

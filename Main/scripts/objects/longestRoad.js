@@ -74,7 +74,7 @@ function check_longest_road(player){
             max = k;
         }
     }
-    if(max>game.players[player].longest_road){
-        game.players[player].longest_road = max;
+    if(max>game.players[player].longestRoad){
+        game.players[player].longestRoad = max;
         }
 }

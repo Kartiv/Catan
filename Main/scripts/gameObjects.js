@@ -7,6 +7,11 @@ class Tile{
         if(this.number == 7){
             this.robber = true;
         }
+        
+        this.button = document.createElement('button');
+        document.body.appendChild(this.button);
+        this.button.style = 'position:absolute; top:' + Math.round(this.poly.center.coords[1]) + 
+        'px; left:' + Math.round(this.poly.center.coords[0]) + 'px; width:20px; height:20px; border-radius:4px';
     }
 
     draw(ctx){ //draw the outline and fill with the correct color + draw text
