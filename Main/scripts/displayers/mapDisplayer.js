@@ -1,4 +1,5 @@
 class MapDisplayer{
+    
     constructor(map){
 
         this.hexButtons = {};
@@ -61,23 +62,7 @@ class MapDisplayer{
             "px; width:20px; height:20px;" + "border-radius:16px;";
             b.style.display = 'none';
     
-            b.onclick = ()=>{
-                let turn = game.currentTurn;
-                if(turn == main_player){
-                    ctx.strokeStyle = player_colors[turn];
-                    ctx.lineWidth = 7;
-                    ctx.beginPath();
-                    ctx.moveTo(edge.vert1.coords[0], edge.vert1.coords[1]);
-                    ctx.lineTo(edge.vert2.coords[0], edge.vert2.coords[1]);
-                    ctx.stroke();
-                    ctx.closePath();
-                    
-                    game.players[turn].roads.push(edge);
-                    edge.road = turn;
-                    check_longest_road(turn);
-                    mapDisplayer.hide_road_buttons();
-                }
-            }    
+            b.onclick = ()=>{this.edgeOnclick(edge)}    
             
             this.edgeButtons[keys[i]] = b;
         }
@@ -144,6 +129,7 @@ class MapDisplayer{
                 vert.house = turn;
                 game.players[turn].houses.push(vert.id);
                 game.currentPlayer.addPoint(); //add victory point to current player
+                game.inAction = false;
                 
                 var img = document.createElement("img");
                 img.src=houseTextures[turn];
@@ -157,6 +143,7 @@ class MapDisplayer{
 
                 if(game.startingTurns){
                     this.show_road_buttons();
+                    game.inAction = true;
                 }
             }
 
@@ -166,6 +153,8 @@ class MapDisplayer{
             if(vert.house == turn){
                 vert.house+=10;
                 game.players[turn].addPoint();
+                game.inAction = false;
+
                 vert.image.src = cityTextures[turn];
                 this.hide_placement_buttons();
             }
@@ -179,9 +168,30 @@ class MapDisplayer{
             h.robber = false;
         }
         hex.robber = true;
+        game.inAction = false;
 
         this.hide_hex_buttons();
         this.updateRobber();
+    }
+
+    edgeOnclick(edge){
+        let turn = game.currentTurn;
+        if(turn == main_player){
+            ctx.strokeStyle = player_colors[turn];
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.moveTo(edge.vert1.coords[0], edge.vert1.coords[1]);
+            ctx.lineTo(edge.vert2.coords[0], edge.vert2.coords[1]);
+            ctx.stroke();
+            ctx.closePath();
+            
+            game.players[turn].roads.push(edge);
+            edge.road = turn;
+            check_longest_road(turn);
+            game.inAction = false;
+
+            mapDisplayer.hide_road_buttons();
+        }
     }
 
     show_hex_buttons(){
@@ -190,6 +200,7 @@ class MapDisplayer{
                 this.hexButtons[hex.id].style.display = 'block';
             }
         }
+        game.inAction = true;
     }
 
     hide_hex_buttons(){

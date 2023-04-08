@@ -72,41 +72,48 @@ function add_resources_by_hex(number){
 
 function house_button(){
     let turn = game.currentTurn;
-    if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[2]
+    if(!game.inAction && turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[2]
         && game.players[turn].resourceCards[3] && game.players[turn].resourceCards[4]){
 
             game.players[turn].addResource([0,2,3,4], [-1,-1,-1,-1]);
-            updateCardDisplay(turn);
+            game.inAction = true;
 
+            updateCardDisplay(turn);
             mapDisplayer.show_placement_buttons();
         }
 }
 
 function city_button(){
     let turn = game.currentTurn;
-    if(turn==main_player && game.players[turn].resourceCards[1]>=3 && game.players[turn].resourceCards[2]>=2){
-        game.players[turn].addResource([1,2], [-3,-2]);
-        updateCardDisplay(turn);
+    if(!game.inAction && turn==main_player && game.players[turn].resourceCards[1]>=3 && game.players[turn].resourceCards[2]>=2){
 
+        game.players[turn].addResource([1,2], [-3,-2]);
+        game.inAction = true;
+
+        updateCardDisplay(turn);
         mapDisplayer.show_city_buttons();
     }
 }
 
 function road_button(){
     let turn = game.currentTurn;
-    if(turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[3]){
-        game.players[turn].addResource([0,3], [-1,-1]);
-        updateCardDisplay(turn);
+    if(!game.inAction && turn==main_player && game.players[turn].resourceCards[0] && game.players[turn].resourceCards[3]){
 
+        game.players[turn].addResource([0,3], [-1,-1]);
+        game.inAction = true;
+
+        updateCardDisplay(turn);
         mapDisplayer.show_road_buttons();
     }
 }
 
 function dev_button(){
     let turn = game.currentTurn;
-    if(turn==main_player && game.players[turn].resourceCards[1] && game.players[turn].resourceCards[2] && game.players[turn].resourceCards[4]){
+    if(!game.inAction && turn==main_player && game.players[turn].resourceCards[1] && game.players[turn].resourceCards[2] && game.players[turn].resourceCards[4]){
             
         game.players[turn].addResource([1,2,4], [-1,-1,-1]);
+        game.inAction = true;
+
         updateCardDisplay(turn);
 
         //add random dev card

@@ -2,6 +2,7 @@ class Game{
     players;
     currentTurn = 0;
     startingTurns = true;
+    inAction = true;
 
     constructor(players){
         this.players = players
