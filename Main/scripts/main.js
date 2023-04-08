@@ -45,7 +45,7 @@ var mapDisplayer;
 function main(){
     
     //start
-    game = new Game([new Player("bob", "red")])
+    game = new Game([new Player("bob", "green")])
     map = new Map();
     mapDisplayer = new MapDisplayer(map);
     mapDisplayer.displayMap()
