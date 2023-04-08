@@ -8,7 +8,7 @@ export class LobbyManager{
 
     createLobby(){
         const lobbyId = this._generateCode(LOBBY_ID_LENGTH)
-        this._lobbys[lobbyId] = new Lobby()
+        this._lobbys[lobbyId] = new Lobby(lobbyId)
         return lobbyId
     }
 
@@ -18,7 +18,7 @@ export class LobbyManager{
 
     addPlayerToLobby(player, lobbyId){
         this._lobbys[lobbyId].addPlayer(player) 
-        this._players[player.playerId] = lobbyId
+        this._players[player.id] = lobbyId
     }
 
     removePlayerFromLobby(playerId){
@@ -26,7 +26,7 @@ export class LobbyManager{
     }
 
     getPlayersLobby(playerId){
-        return this._players[playerId]
+        return this._lobbys[this._players[playerId]]
     }
 
     _generateCode(length) {
