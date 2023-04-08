@@ -1,17 +1,17 @@
 class Map{
-    vertexList = []; //list of the vertices- each vertex knows its neighboring hexes and its relevant button
     edgeDict = {}; //list of the edges
     vertDict = {}; //dictionary of the vertices where the keys are their buttons' id's
     hexMap = []; //list of the hexagon elements
 
     constructor(){
-        this.hexMap = this.mapGeneration()
+        this.mapGeneration();
     }
 
     compareID(id, hexGrid){
-        for(let i=0; i<this.vertexList.length; i++){
-            if(jsn.areEqual(this.vertexList[i].id,id)){
-                this.vertexList[i].hexArr.push(hexGrid[hexGrid.length-1]); //if we already encountered this vertex then
+        let keys = Object.keys(this.vertDict);
+        for(let i=0; i<keys.length; i++){
+            if(jsn.areEqual(this.vertDict[keys[i]].listID,id)){
+                this.vertDict[keys[i]].hexArr.push(hexGrid[hexGrid.length-1]); //if we already encountered this vertex then
                 //we note that the current hex is adjacent to it
                 return true;
             }
@@ -29,11 +29,15 @@ class Map{
                                             map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
     
                 for(let k=0; k<hexGrid[hexGrid.length-1].vertices.length; k++){ //add new vertices
+
                     let vert = hexGrid[hexGrid.length-1].vertices[k];
-                    let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
-                    if(!(this.compareID(id, hexGrid))){
-                        this.vertexList.push(new Vertex(id, vert.coords[0], vert.coords[1]));
-                        this.vertexList[this.vertexList.length-1].hexArr.push(hexGrid[hexGrid.length-1]);
+                    let listID = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
+                    let id = calculateID(listID[0], listID[1]);
+
+                    if(!(this.compareID(listID, hexGrid))){
+
+                        this.vertDict[id] = (new Vertex(listID, vert.coords[0], vert.coords[1]));
+                        this.vertDict[id].hexArr.push(hexGrid[hexGrid.length-1]);
                     }
                 }
             }
@@ -44,19 +48,17 @@ class Map{
                                             map_top+(7-i)*hex_width*3/4, hex_width));
     
                 for(let k=0; k<hexGrid[hexGrid.length-1].vertices.length; k++){
+
                     let vert = hexGrid[hexGrid.length-1].vertices[k];
-                    let id = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
-                    if(!(this.compareID(id, hexGrid))){
-                        this.vertexList.push(new Vertex(id, vert.coords[0], vert.coords[1]));
-                        this.vertexList[this.vertexList.length-1].hexArr.push(hexGrid[hexGrid.length-1]);
+                    let listID = [Math.round(vert.coords[0]), + Math.round(vert.coords[1])];
+                    let id = calculateID(listID[0], listID[1]);
+
+                    if(!(this.compareID(listID, hexGrid))){
+                        this.vertDict[id] = (new Vertex(listID, vert.coords[0], vert.coords[1]));
+                        this.vertDict[id].hexArr.push(hexGrid[hexGrid.length-1]);
                     }
                 }          
             }
-        }
-    
-        //create vertDict
-        for(let i=0; i<this.vertexList.length; i++){
-            this.vertDict[this.vertexList[i].button_id] = this.vertexList[i];
         }
     
         //assign resources
@@ -101,6 +103,6 @@ class Map{
             }
         }
     
-        return map;
+        this.hexMap = map;
     }
 }

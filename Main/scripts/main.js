@@ -29,7 +29,7 @@ var diceOne = document.getElementById("diceone"); //div of first dice for displa
 var diceTwo = document.getElementById("dicetwo"); //div of second dice for display
 
 //player variables
-var player_colors = ["red", "blue", "grey", "green", "yellow"];
+var player_colors = ["red", "blue", "green", "grey", "purple"];
 var main_player = 0;
 var end_on = false; //controls if end turn button is clickable
 var cardDisplay = [new Resource(0,0), new Resource(1,1),new Resource(2,2),new Resource(3,3), new Resource(4,4)];
@@ -48,7 +48,7 @@ function main(){
     game = new Game([new Player("bob", "red")])
     map = new Map();
     mapDisplayer = new MapDisplayer(map);
-    mapDisplayer.display_map()
+    mapDisplayer.displayMap()
     mapDisplayer.show_placement_buttons();
 }
 

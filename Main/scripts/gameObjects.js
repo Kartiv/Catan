@@ -1,38 +1,22 @@
 class Tile{
+
     constructor(polygon, number, resource){
         this.poly = polygon;
         this.resource = resource;
         this.number = number;
         this.robber = false;
-        if(this.number == 7){
+        if(this.number == ''){
             this.robber = true;
         }
-        
-        this.button = document.createElement('button');
-        document.body.appendChild(this.button);
-        this.button.style = 'position:absolute; top:' + Math.round(this.poly.center.coords[1]) + 
-        'px; left:' + Math.round(this.poly.center.coords[0]) + 'px; width:20px; height:20px; border-radius:4px';
-    }
 
-    draw(ctx){ //draw the outline and fill with the correct color + draw text
-        ctx.fillStyle = tile_textures[this.resource];
-        this.poly.fill(ctx);
-        ctx.fillStyle = 'black';
-        this.poly.draw(ctx);
-        ctx.strokeStyle = "blue";
-        ctx.beginPath();
-        ctx.font = map_font_size.toString() + 'px Cursive';
-        ctx.strokeText(this.number.toString(), this.poly.center.coords[0]-map_font_size/3, 
-                        this.poly.center.coords[1]+map_font_size/3, map_font_size/1.5);
-        ctx.closePath();
-        ctx.strokeStyle = "black";
+        this.id = calculateID(this.poly.center.coords[0], this.poly.center.coords[1]);
     }
 }
 
 class Vertex{
     constructor(id, x, y){
-        this.id = id;
-        this.button_id = calculateID(id[0],id[1]);
+        this.listID = id;
+        this.id = calculateID(id[0],id[1]);
         this.hexArr = [];
         this.button;
         this.house; //if its a normal house it equals the player turn and otherwise it equals it +10
@@ -50,31 +34,6 @@ class Edge{
         this.vert2 = vert2;
         this.id = this.x.toString() + this.y.toString();
         this.road;
-        
-        this.button = document.createElement("button");
-        document.body.appendChild(this.button);
-
-        this.button.style = "position: absolute; top:" + y.toString() + "px; left:" + x.toString() + 
-        "px; width:20px; height:20px;" + "border-radius:16px;";
-        this.button.style.display = 'none';
-
-        this.button.onclick = (e)=>{
-            let turn = game.currentTurn;
-            if(turn == main_player){
-                ctx.strokeStyle = player_colors[turn];
-                ctx.lineWidth = 7;
-                ctx.beginPath();
-                ctx.moveTo(vert1.coords[0], vert1.coords[1]);
-                ctx.lineTo(vert2.coords[0], vert2.coords[1]);
-                ctx.stroke();
-                ctx.closePath();
-                
-                game.players[turn].roads.push(this);
-                this.road = turn;
-                check_longest_road(turn);
-                mapDisplayer.hide_road_buttons();
-            }
-        }
     }
 }
 

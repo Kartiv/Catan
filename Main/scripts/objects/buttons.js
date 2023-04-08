@@ -8,6 +8,10 @@ function dice_click(){
         updateDiceDisplay(s1,s2);
         updateCardDisplay(turn);
 
+        if(s1+s2 == 7){
+            mapDisplayer.show_hex_buttons();
+        }
+
         dice_on = false;
         end_on = true;
     }
