@@ -5,6 +5,7 @@ import { Server } from 'http'
 import {LobbyManager} from './pregame/lobbyClasses/lobbyManager.js'
 import socketPreGameHandler from './pregame/lobbyLogic/socketPreGameHandler.js'
 import httpLobbyCreation from './pregame/lobbyLogic/httpLobbyCreation.js'
+import socketGameLogic from './gameLogic/socketGameLogic.js'
 
 const app = express()
 const http = new Server(app)
@@ -17,6 +18,7 @@ const lobbyManager = new LobbyManager()
 
 io.on('connection',socket=>{
     socketPreGameHandler(io,socket,lobbyManager)
+    socketGameLogic(socket,io,lobbyManager)
 })
 
 app.use('/',httpLobbyCreation(lobbyManager))

@@ -1,4 +1,13 @@
-class Map{
+import { jsn } from "../imports.js";
+import { calculateID } from "../util.js";
+import Polygon from "../Polygon.js";
+import { Tile, Edge, Vertex } from "./gameObjects.js";
+
+const hex_width = 100; //longest diagonal of the hexagon
+const map_left = 500; //not really the distance from the left but imagine that it is
+const map_top = 100; //same
+
+export default class Map{
     edgeDict = {}; //list of the edges
     vertDict = {}; //dictionary of the vertices where the keys are their buttons' id's
     hexMap = []; //list of the hexagon elements
@@ -26,7 +35,7 @@ class Map{
         for(let i=3; i<6; i++){ //creating top half of hexagons
             for(let j=0; j<i; j++){
                 hexGrid.push(Polygon.createHex(map_left-hex_width*3**0.5/4*i+j*hex_width*3**0.5/2, //every row gets shifted left
-                                            map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
+map_top+(i-3)*hex_width*3/4, hex_width)); //every row gets shifted down
     
                 for(let k=0; k<hexGrid[hexGrid.length-1].vertices.length; k++){ //add new vertices
 

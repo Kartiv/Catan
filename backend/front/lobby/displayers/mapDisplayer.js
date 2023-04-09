@@ -22,7 +22,7 @@ class MapDisplayer{
         let robberPic = document.createElement('img');
         robberMain.appendChild(robberPic);
 
-        robberPic.src = 'Assets/robber.png';
+        robberPic.src = '/lobby/Assets/robber.png';
 
         let x;
         let y;
@@ -187,7 +187,6 @@ class MapDisplayer{
             
             game.players[turn].roads.push(edge);
             edge.road = turn;
-            check_longest_road(turn);
             game.inAction = false;
 
             mapDisplayer.hide_road_buttons();
@@ -290,9 +289,9 @@ class MapDisplayer{
 
     drawHex(hex){
         ctx.fillStyle = tile_textures[hex.resource];
-        hex.poly.fill(ctx);
+        fill(hex.poly);
         ctx.fillStyle = 'black';
-        hex.poly.draw(ctx);
+        draw(hex.poly);
         ctx.strokeStyle = "blue";
         ctx.beginPath();
         ctx.font = map_font_size.toString() + 'px Cursive';
@@ -311,4 +310,28 @@ class MapDisplayer{
             }
         }
     }
+}
+
+
+function fill(hex, scale = 1){
+    ctx.beginPath();
+    ctx.moveTo(hex.vertices[0].coords[0], hex.vertices[0].coords[1]);
+    for(let i=0; i<hex.vertices.length; i++){
+        ctx.lineTo(hex.vertices[(i+1)%hex.vertices.length].coords[0], 
+                    hex.vertices[(i+1)%hex.vertices.length].coords[1]);
+    }
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw(hex, scale = 1){
+    ctx.beginPath();
+    ctx.moveTo(hex.vertices[0].coords[0], hex.vertices[0].coords[1]);
+    for(let i=0; i<hex.vertices.length; i++){
+        ctx.lineTo(hex.vertices[(i+1)%hex.vertices.length].coords[0], 
+                    hex.vertices[(i+1)%hex.vertices.length].coords[1]);
+    }
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.closePath();
 }

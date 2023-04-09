@@ -9,7 +9,35 @@
 </head>
 <body>
     <div hidden id="game">
-        Wow amazing game
+        <canvas id="canvas"></canvas>
+        <button id="dice" onclick="dice_click()">DICE</button>
+        <div id="rollresult">Roll:0</div>
+        <div id="diceone"></div>
+        <div id="dicetwo"></div>
+    
+        <button class="actionButtons" style="top: 275px;">
+        <img src="Assets/recipe.png" style="width:45px; height:45px"/>
+        </button>
+    
+        <button id = "roadButton" onclick="road_button()" class="actionButtons" style="top: 335px;">
+        <img src="Assets/road.png" style="width:45px; height:45px"/>
+        </button>
+    
+        <button id="houseButton" onclick="house_button()" class="actionButtons" style="top: 395px;">
+        <img src="Assets/house.png" style="width:45px; height:45px"/>
+        </button>
+    
+        <button id="cityButton" onclick="city_button()" class="actionButtons" style="top: 455px;">
+        <img src="Assets/city.png" style="width:45px; height:45px"/>
+        </button>
+    
+        <button id="devButton" onclick="dev_button()" class="actionButtons" style="top: 515px;">
+        <img src="Assets/dev.png" style="width:45px; height:45px"/>
+        </button>
+    
+        <button class="actionButtons" style="top: 575px;">
+        <img src="Assets/trade.png" style="width:45px; height:45px"/>
+        </button>
     </div>
 
     <div id="pregame">
@@ -25,5 +53,10 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lobby/pregame.js"></script>
+    <script src="/lobby/displayers/displayers.js"></script>
+    <script src="/lobby/displayers/cards.js"></script>
+    <script src="/lobby/displayers/buttons.js"></script>
+    <script src="/lobby/displayers/mapDisplayer.js"></script>
+    <script src="/lobby/main.js"></script>
 </body>
 </html>

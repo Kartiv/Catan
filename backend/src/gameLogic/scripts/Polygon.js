@@ -1,4 +1,9 @@
-class Polygon{
+import { jsn, Vector } from "./imports.js";
+
+export default class Polygon{
+    vertices;
+    center;
+
     constructor(vertices){
         this.vertices = vertices;
 

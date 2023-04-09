@@ -1,6 +1,5 @@
-export class Player{
+export class BasePlayer{
     ready = false
-    gameData;
     constructor(name, id){
         this.name = name
         this.id = id

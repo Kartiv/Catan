@@ -1,3 +1,4 @@
+import { jsn } from "./imports.js";
 //longest road stuff. WARNING - THIS SHIT INEFFICIENT AS SHIT. AVERT YOUR EYES AND KEEP AWAY FROM CHILDREN
 
 function longest_road_from_starting_point_a(map, a, path=[]){
@@ -64,7 +65,7 @@ function create_dictionary_map_list_thing(player){
     return map_thing;
 }
 
-function check_longest_road(player){
+export function check_longest_road(player){
     let dict = create_dictionary_map_list_thing(player);
     let max = -1;
     let keys = Object.keys(dict);

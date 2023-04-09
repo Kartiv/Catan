@@ -7,3 +7,73 @@
     height:2rem;
     border: 1px solid
 }
+
+body{
+    background:plum;
+}
+
+canvas{
+    z-index: 0;
+    border:solid 3px black;
+}
+
+#dice{
+    position:absolute;
+    border:solid 4px black;
+    height:100px;
+    width:100px;
+    background-color: white;
+    top: 20px;
+    left: 92.5%;
+    font-size:16px;
+    border-radius: 12px;
+}
+#dice:active{
+    background-color: antiquewhite;
+}
+
+#rollresult{
+    position:absolute;
+    border: solid 4px black;
+    height:30px;
+    width:200px;
+    background-color: white;
+    top:125px;
+    left:90%;
+    font-size:20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+#diceone{
+    position:absolute;
+    height:100px;
+    width:100px;
+    top:165px;
+    left:90%;
+    text-align: center;
+}
+
+#dicetwo{
+    position:absolute;
+    height:100px;
+    width:100px;
+    top:165px;
+    left:95%;
+    text-align: center;
+}
+
+.vertex:active{
+    background-color: gray;
+}
+
+.actionButtons{
+    position:absolute;
+    left: 97.5%;
+    height: 50px;
+    width: 50px;
+    padding: 0%;
+}
+.actionButtons:active{
+    background-color: gray;
+}

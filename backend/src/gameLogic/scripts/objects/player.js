@@ -1,6 +1,6 @@
-class Player{
-    name;
-    id;
+import { BasePlayer } from "../../../pregame/lobbyClasses/player.js";
+
+export default class Player extends BasePlayer{
     color;
     resourceCards = [0,0,0,0,0]
     devCards = [0,0,0,0,0]
@@ -8,8 +8,8 @@ class Player{
     houses = []
     longestRoad = 0
     victoryPoints = 0
-    constructor(name, color){
-        this.name = name
+    constructor(name, id, color){
+        super(name,id)
         this.color = color
     }
 

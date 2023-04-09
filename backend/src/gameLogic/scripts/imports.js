@@ -1,4 +1,4 @@
-class jsn{
+export class jsn{
 
     //Random
 
@@ -328,7 +328,7 @@ class jsn{
     }
 }
 
-class Vector{ //vector class
+export class Vector{ //vector class
 
     constructor(coords){
         this.coords = coords;
@@ -443,7 +443,7 @@ class Vector{ //vector class
     }
 }
 
-class Matrix{
+export class Matrix{
     /**
      * 
      * @param {Array} array - must be formatted either as 2d array, or 1d array of Vector objects
@@ -577,7 +577,7 @@ class Matrix{
     }
 }
 
-class Graph{
+export class Graph{
     /**
      * 
      * @param {Html Canvas} canvas - Canvas to draw on

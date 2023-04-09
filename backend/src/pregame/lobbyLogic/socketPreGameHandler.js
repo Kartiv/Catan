@@ -1,4 +1,5 @@
-import { Player } from '../lobbyClasses/player.js'
+import Game from '../../gameLogic/scripts/objects/game.js'
+import Player from '../../gameLogic/scripts/objects/player.js'
 
 const DEFAULT_NAME = 'the great bob'
 
@@ -9,7 +10,7 @@ export default function socketPreGameHandler(io,socket,lobbyManager){
         if(!lobbyManager.getLobby(lobbyId))
             return
 
-        lobbyManager.addPlayerToLobby(new Player(name||DEFAULT_NAME,socket.id),lobbyId)
+        lobbyManager.addPlayerToLobby(new Player(name||DEFAULT_NAME,socket.id,"red"),lobbyId)
         socket.join(lobbyId)
         io.to(lobbyId).emit('lobby-update',lobbyManager.getLobby(lobbyId))
     })
@@ -23,6 +24,7 @@ export default function socketPreGameHandler(io,socket,lobbyManager){
         io.to(lobby.id).emit('lobby-update',lobby)
     })
     
+    //Todo - this really is'nt supose to be here but ill fix it later maybe..
     socket.on('start',()=>{
         const lobby = lobbyManager.getPlayersLobby(socket.id)
         if(!lobby)
@@ -34,7 +36,10 @@ export default function socketPreGameHandler(io,socket,lobbyManager){
         }
 
         lobby.started = true
-        io.to(lobby.id).emit('start',lobby)
+        lobby.gameData = new Game(lobby.players)
+        
+        io.to(lobby.id).emit('start')
+        io.to(lobby.id).emit('board-update',lobby.gameData)
     })
 
     socket.on('disconnect',()=>{
